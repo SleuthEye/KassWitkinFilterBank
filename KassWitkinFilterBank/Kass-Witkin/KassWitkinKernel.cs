@@ -39,41 +39,61 @@ namespace CustomFilterBank_Test
             double[,] temp = (double[,])Kernel.Clone();
             PaddedKernel = ImagePadder.Pad(temp, newWidth, newHeight);
         }*/
+
         public void Pad(int unpaddedWidth, int unpaddedHeight, int newWidth, int newHeight)
         {
+            cPaddedKernel = new Complex[newWidth, newHeight]; 
+
+            //32x32
             Complex[,] unpaddedKernelFrequencyDomain = ImageDataConverter.ToComplex((double[,])Kernel.Clone());
+
             FourierTransform ftInverse = new FourierTransform();
+
             ftInverse.InverseFFT(FourierShifter.RemoveFFTShift(unpaddedKernelFrequencyDomain));
 
-            Complex[,] cKernel = FourierShifter.FFTShift(ftInverse.GrayscaleImageComplex);
+            //32x32
+            Complex[,] unpaddedKernelTimeDomain = FourierShifter.FFTShift(ftInverse.GrayscaleImageComplex);
 
             int startPointX = (int)Math.Ceiling((double)(newWidth - unpaddedWidth) / (double)2) - 1;
             int startPointY = (int)Math.Ceiling((double)(newHeight - unpaddedHeight) / (double)2) - 1;
+
+            for(int j=startPointY ; j<startPointY+unpaddedHeight ; j++)
+            {
+                for (int i = startPointX ; i < startPointX+unpaddedWidth ; i++)
+                {
+                    cPaddedKernel[i, j] = unpaddedKernelTimeDomain[i-startPointX, j-startPointY];
+                }
+            }
+
+            /*
             for (int j = 0; j < newHeight; j++)
             {
                 for (int i = 0; i < startPointX; i++)
                 {
-                    cKernel[i, j] = 0;
+                    unpaddedKernelTimeDomain[i, j] = 0;
                 }
                 for (int i = startPointX + unpaddedWidth; i < newWidth; i++)
                 {
-                    cKernel[i, j] = 0;
+                    unpaddedKernelTimeDomain[i, j] = 0;
                 }
             }
+
             for (int i = startPointX; i < startPointX + unpaddedWidth; i++)
             {
                 for (int j = 0; j < startPointY; j++)
                 {
-                    cKernel[i, j] = 0;
+                    unpaddedKernelTimeDomain[i, j] = 0;
                 }
                 for (int j = startPointY + unpaddedHeight; j < newHeight; j++)
                 {
-                    cKernel[i, j] = 0;
+                    unpaddedKernelTimeDomain[i, j] = 0;
                 }
             }
+             **/
 
-            FourierTransform ftForward = new FourierTransform(cKernel); ftForward.ForwardFFT();
-            cPaddedKernel = ftForward.FourierImageComplex;
+            FourierTransform ftForward = new FourierTransform(cPaddedKernel); ftForward.ForwardFFT();
+
+            //cPaddedKernel = ftForward.FourierImageComplex;
         }
 
         public Complex[,] ToComplexPadded()
@@ -101,8 +121,6 @@ namespace CustomFilterBank_Test
         {
             return ImageDataConverter.ToComplex(Kernel);
         }
-
-
 
         public void Compute()
         {

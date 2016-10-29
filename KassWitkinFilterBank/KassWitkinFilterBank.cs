@@ -15,6 +15,8 @@ namespace CustomFilterBank_Test
         public int WidthWithPadding { get; set; }
         public int HeightWithPadding { get; set; }
         public int KernelDimension { get; set; }
+        public int KernelWidth { get; set; }
+        public int KernelHeight { get; set; }
 
         public KassWitkinFilterBank()
         {}
@@ -32,8 +34,8 @@ namespace CustomFilterBank_Test
             for (int i = 0; i < NoOfFilters; i++)
             {
                 kernel = new KassWitkinKernel();
-                kernel.Width = KernelDimension;
-                kernel.Height = KernelDimension;
+                kernel.Width = KernelWidth;
+                kernel.Height = KernelHeight;
                 kernel.CenterX = (kernel.Width) / 2;
                 kernel.CenterY = (kernel.Height) / 2;
                 kernel.Du = 2;
@@ -83,8 +85,8 @@ namespace CustomFilterBank_Test
             for (int i = 0; i < NoOfFilters; i++)
             {
                 kernel = new KassWitkinKernel();
-                kernel.Width = KernelDimension;
-                kernel.Height = KernelDimension;
+                kernel.Width = KernelWidth;
+                kernel.Height = KernelHeight;
                 kernel.CenterX = (kernel.Width) / 2;
                 kernel.CenterY = (kernel.Height) / 2;
                 kernel.Du = 2;

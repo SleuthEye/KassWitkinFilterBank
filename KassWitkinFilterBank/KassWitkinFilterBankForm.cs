@@ -59,6 +59,16 @@ namespace CustomFilterBank_Test
             _bank.KernelDimension = 32;
             _bank.WidthWithPadding = (int)Tools.ToNextPow2((uint)(_bank.KernelDimension + _inputImage.Width));
             _bank.HeightWithPadding = (int)Tools.ToNextPow2((uint)(_bank.KernelDimension + _inputImage.Height));
+            _bank.KernelWidth = _bank.KernelDimension;
+            while (_bank.KernelWidth * 2 + _inputImage.Width < _bank.WidthWithPadding)
+            {
+                _bank.KernelWidth *= 2;
+            }
+            _bank.KernelHeight = _bank.KernelDimension;
+            while (_bank.KernelHeight * 2 + _inputImage.Height < _bank.HeightWithPadding)
+            {
+                _bank.KernelHeight *= 2;
+            }
 
             Bitmap tempBmp = Grayscale.ToGrayscale(Bitmap.FromFile(path) as Bitmap);
             Bitmap meanFilteredImage = Filters.FftMean(tempBmp);

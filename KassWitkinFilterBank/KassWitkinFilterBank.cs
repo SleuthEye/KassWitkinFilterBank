@@ -23,7 +23,10 @@ namespace CustomFilterBank_Test
         {
             Kernels = new List<KassWitkinKernel>();
 
-            double degrees = FilterAngle;
+            // The generated template filter from the equations gives a line at 45 degrees. 
+            // To get the filter to highlight lines starting with an angle of 90 degrees
+            // we should start with an additional 45 degrees offset.
+            double degrees = 45;
 
             KassWitkinKernel kernel;
             for (int i = 0; i < NoOfFilters; i++)
@@ -43,7 +46,9 @@ namespace CustomFilterBank_Test
                 
                 Kernels.Add(kernel);
 
-                degrees += degrees;
+                // Now increment the angle by FilterAngle
+                // (not "+= degrees" which doubles the value at each step)
+                degrees += FilterAngle;
             }
 
             List<Bitmap> list = new List<Bitmap>();

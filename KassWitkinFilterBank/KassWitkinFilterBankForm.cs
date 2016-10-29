@@ -60,7 +60,19 @@ namespace CustomFilterBank_Test
             _bank.WidthWithPadding = (int)Tools.ToNextPow2((uint)(_bank.KernelDimension + _inputImage.Width));
             _bank.HeightWithPadding = (int)Tools.ToNextPow2((uint)(_bank.KernelDimension + _inputImage.Height));
 
-            Bitmap _paddedImage = ImagePadder.Pad(_inputImage, _bank.WidthWithPadding, _bank.HeightWithPadding);
+            Bitmap tempBmp = Grayscale.ToGrayscale(Bitmap.FromFile(path) as Bitmap);
+            Bitmap meanFilteredImage = Filters.FftMean(tempBmp);
+            double[,] meanFilteredImageDouble = ImageDataConverter.ToDouble(ImageDataConverter.ToComplex(ImageDataConverter.ToInteger(meanFilteredImage)));
+            double[,] tempImageDouble = ImageDataConverter.ToDouble(ImageDataConverter.ToComplex(ImageDataConverter.ToInteger(tempBmp)));
+            for (int i = 0; i < tempImageDouble.GetLength(0); i++)
+            {
+                for (int j = 0; j < tempImageDouble.GetLength(1); j++)
+                {
+                    tempImageDouble[i, j] -= meanFilteredImageDouble[i, j];
+                }
+            }
+
+            double[,] _paddedImage = ImagePadder.Pad(tempImageDouble, _bank.WidthWithPadding, _bank.HeightWithPadding);
 
             List<Bitmap> filtered = _bank.Apply(_paddedImage);
 

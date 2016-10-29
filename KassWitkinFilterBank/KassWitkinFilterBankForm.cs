@@ -15,7 +15,7 @@ namespace CustomFilterBank_Test
     public partial class KassWitkinFilterBankForm : Form
     {
         
-        private string path = @"E:\___MSc in CSN\EMSC1,2,3\scratch.png";
+        private string path = @"..\..\..\scratch.png";
 
         #region ctor
         public KassWitkinFilterBankForm()
